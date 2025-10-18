@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>삶의 정보 한 조각 - 누구나 쉽게 접근하는 정보 서비스</title>
+    <style>
+        /* 기본 설정 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* 스크롤 애니메이션을 위한 클래스 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 히어로 섹션 */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            color: white;
+        }
+
+        .emoji-decoration {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero p {
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 18px 45px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .cta-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .cta-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-5px);
+        }
+
+        /* 공통 섹션 스타일 */
+        section {
+            padding: 80px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #718096;
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 문제 제시 섹션 */
+        .problem-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .problem-card {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .problem-icon {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+        }
+
+        .problem-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .problem-card p {
+            color: #4a5568;
+            line-height: 1.7;
+        }
+
+        .stat-highlight {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* 솔루션 섹션 */
+        .solution-section {
+            background: white;
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .solution-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 25px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);
+        }
+
+        .solution-emoji {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .solution-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .solution-card p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        /* 서비스 섹션 */
+        .services-section {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .service-emoji {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .service-card h3 {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .service-card p {
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .detail-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .detail-button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 25px;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-button {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 2em;
+            cursor: pointer;
+            color: #718096;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover {
+            color: #2d3748;
+        }
+
+        .modal-content h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .modal-content h3 {
+            font-size: 1.4em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .modal-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .modal-content li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .modal-content li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .info-box {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        /* 작동 방식 섹션 */
+        .how-it-works {
+            background: white;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 30px;
+            background: #f7fafc;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .step-number {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .step-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .step-card p {
+            line-height: 1.7;
+        }
+
+        /* 특장점 섹션 */
+        .features-section {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-8px);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        /* 가격 섹션 */
+        .pricing-section {
+            background: white;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .pricing-card {
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            border-color: #667eea;
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .pricing-card.featured {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #f093fb;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .pricing-emoji {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .price-detail {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .pricing-card.featured .pricing-features li::before {
+            color: #ffd700;
+        }
+
+        /* FAQ 섹션 */
+        .faq-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 50px auto 0;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            padding: 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #2d3748;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #f7fafc;
+        }
+
+        .faq-question::after {
+            content: '▼';
+            transition: transform 0.3s ease;
+            font-size: 0.8em;
+            color: #667eea;
+        }
+
+        .faq-question.active::after {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 25px;
+        }
+
+        .faq-answer.open {
+            max-height: 500px;
+            padding: 0 25px 25px;
+        }
+
+        .faq-answer p {
+            color: #4a5568;
+            line-height: 1.8;
+        }
+
+        /* 최종 CTA 섹션 */
+        .final-cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .final-cta h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .final-cta p {
+            font-size: 1.3em;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .final-cta .emoji-decoration {
+            font-size: 4em;
+            margin-bottom: 30px;
+        }
+
+        /* 푸터 */
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 50px 20px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+
+        .footer-section p {
+            line-height: 1.8;
+            opacity: 0.8;
+        }
+
+        .contact-info {
+            list-style: none;
+        }
+
+        .contact-info li {
+            padding: 8px 0;
+            opacity: 0.8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.7;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .back-to-top:hover {
+            background: #764ba2;
+            transform: translateY(-5px);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2em;
+            }
+
+            .hero p {
+                font-size: 1.1em;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+
+            .cta-container {
+                flex-direction: column;
+            }
+
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            section {
+                padding: 60px 15px;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 30px 20px;
+                max-width: 90%;
+            }
+
+            .final-cta h2 {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8em;
+            }
+
+            .emoji-decoration {
+                font-size: 2em;
+            }
+
+            .problem-icon,
+            .solution-emoji,
+            .service-emoji {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 히어로 섹션 -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="emoji-decoration">🧩✨📚</div>
+            <h1>삶의 정보 한 조각</h1>
+            <p>정부 혜택부터 AI 기술까지, 중년층을 위한 쉽고 친절한 정보 가이드</p>
+            <div class="cta-container">
+                <a href="#services" class="cta-button cta-primary">서비스 소개 보기 📋</a>
+                <a href="https://forms.gle/YOUR_FORM_LINK" target="_blank" class="cta-button cta-secondary">무료 상담 신청 💬</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 문제 제시 섹션 -->
+    <section class="problem-section fade-in">
+        <div class="container">
+            <h2 class="section-title">왜 '삶의 정보 한 조각'이 필요한가요? 🤔</h2>
+            <p class="section-subtitle">중년층 이상의 분들이 겪는 정보 접근의 어려움을 해결합니다</p>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon">😰</div>
+                    <h3>복잡한 정부 혜택 정보</h3>
+                    <p>청년내일채움공제, 실업급여, 육아수당... 내가 받을 수 있는 혜택이 무엇인지, 어떻게 신청하는지 찾기가 너무 어렵습니다.</p>
+                    <span class="stat-highlight">70% 이상이 정보 부족으로 혜택 놓침</span>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">📱</div>
+                    <h3>어려운 온라인 정보 탐색</h3>
+                    <p>정보는 인터넷에 다 있다지만, 어디서 어떻게 찾아야 할지 막막합니다. 검색해도 광고와 뉴스만 가득하고 정작 필요한 정보는 찾기 힘듭니다.</p>
+                    <span class="stat-highlight">인터넷 정보 탐색 평균 30분 이상 소요</span>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">🤖</div>
+                    <h3>AI 시대, 뒤처지는 불안감</h3>
+                    <p>ChatGPT, AI 비서... 주변에서 다들 사용한다는데 저는 사용법도 모르겠고 시작하기가 두렵습니다. 신기술에 대한 두려움이 커져갑니다.</p>
+                    <span class="stat-highlight">50대 이상 AI 이해도 20% 미만</span>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-icon">⏰</div>
+                    <h3>시간과 에너지 낭비</h3>
+                    <p>하나의 정보를 찾기 위해 여러 사이트를 헤매고, 복잡한 용어 때문에 이해하는데 시간이 오래 걸립니다. 결국 포기하게 됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 솔루션 섹션 -->
+    <section class="solution-section fade-in">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">삶의 정보 한 조각의 해결책 💡</h2>
+            <p class="section-subtitle" style="color: rgba(255,255,255,0.9);">복잡한 정보를 쉽고 명확하게 전달합니다</p>
+            
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <span class="solution-emoji">🎯</span>
+                    <h3>맞춤형 정부 혜택 안내</h3>
+                    <p>나이, 직업, 상황에 맞는 정부 지원 혜택을 찾아드립니다. 복잡한 신청 과정도 단계별로 쉽게 설명하고, 필요한 서류와 준비물까지 상세히 안내합니다.</p>
+                </div>
+                
+                <div class="solution-card">
+                    <span class="solution-emoji">👨‍🏫</span>
+                    <h3>1:1 AI 기초 교육</h3>
+                    <p>ChatGPT, AI 이미지 생성 등 실생활에 유용한 AI 도구를 천천히, 쉽게 가르쳐드립니다. 개인의 속도에 맞춰 진행하며, 실습 위주로 바로 활용할 수 있도록 돕습니다.</p>
+                </div>
+                
+                <div class="solution-card">
+                    <span class="solution-emoji">📖</span>
+                    <h3>쉬운 언어로 정리된 가이드</h3>
+                    <p>어려운 전문 용어는 쉬운 말로 바꾸고, 복잡한 과정은 그림과 함께 단계별로 정리합니다. 언제든 다시 볼 수 있는 개인 맞춤 자료를 제공합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 서비스 소개 섹션 -->
+    <section id="services" class="services-section fade-in">
+        <div class="container">
+            <h2 class="section-title">제공 서비스 🎁</h2>
+            <p class="section-subtitle">여러분의 필요에 맞는 다양한 서비스를 준비했습니다</p>
+            
+            <div class="services-grid">
+                <div class="service-card" onclick="openModal('modal1')">
+                    <span class="service-emoji">🏛️</span>
+                    <h3>정부 혜택 컨설팅</h3>
+                    <p>내가 받을 수 있는 정부 지원금과 복지 혜택을 찾아드리고, 신청 방법을 안내합니다.</p>
+                    <button class="detail-button">자세히 보기 →</button>
+                </div>
+                
+                <div class="service-card" onclick="openModal('modal2')">
+                    <span class="service-emoji">🤖</span>
+                    <h3>AI 기초 교육</h3>
+                    <p>ChatGPT, AI 이미지 생성 등 실생활에 유용한 AI 도구 사용법을 쉽게 배웁니다.</p>
+                    <button class="detail-button">자세히 보기 →</button>
+                </div>
+                
+                <div class="service-card" onclick="openModal('modal3')">
+                    <span class="service-emoji">📱</span>
+                    <h3>스마트폰 활용 교육</h3>
+                    <p>온라인 뱅킹, 정부24 사용법 등 꼭 필요한 스마트폰 기능을 배웁니다.</p>
+                    <button class="detail-button">자세히 보기 →</button>
+                </div>
+                
+                <div class="service-card" onclick="openModal('modal4')">
+                    <span class="service-emoji">📋</span>
+                    <h3>맞춤형 정보 자료 제작</h3>
+                    <p>개인 상황에 맞는 정보 가이드북을 쉽게 읽을 수 있도록 제작해드립니다.</p>
+                    <button class="detail-button">자세히 보기 →</button>
+                </div>
+                
+                <div class="service-card" onclick="openModal('modal5')">
+                    <span class="service-emoji">💬</span>
+                    <h3>정보 탐색 대행</h3>
+                    <p>필요한 정보를 대신 찾아드리고 정리해서 알려드립니다.</p>
+                    <button class="detail-button">자세히 보기 →</button>
+                </div>
+                
+                <div class="service-card" onclick="openModal('modal6')">
+                    <span class="service-emoji">👥</span>
+                    <h3>소그룹 정보 교실</h3>
+                    <p>5-10명 소규모 그룹으로 함께 배우는 정보 활용 교실을 운영합니다.</p>
+                    <button class="detail-button">자세히 보기 →</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 모달들 -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('modal1')">&times;</span>
+            <h2>🏛️ 정부 혜택 컨설팅</h2>
+            <p>복잡한 정부 지원 정책을 쉽게 이해하고, 내게 맞는 혜택을 찾아 신청까지 도와드립니다.</p>
+            
+            <h3>📦 포함 내용</h3>
+            <ul>
+                <li>개인 상황 분석 (연령, 소득, 가구 구성 등)</li>
+                <li>받을 수 있는 정부 혜택 리스트 정리</li>
+                <li>각 혜택별 신청 조건 및 방법 안내</li>
+                <li>필요 서류 체크리스트 제공</li>
+                <li>신청 사이트 접속 및 작성 가이드</li>
+                <li>신청 후 처리 과정 추적 방법</li>
+            </ul>
+            
+            <div class="info-box">
+                <p><strong>⏰ 예상 소요 시간:</strong> 1-2시간 (1:1 상담)</p>
+                <p><strong>💰 가격:</strong> 50,000원 (초기 할인가 30,000원)</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('modal2')">&times;</span>
+            <h2>🤖 AI 기초 교육</h2>
+            <p>ChatGPT, AI 이미지 생성 등 일상에서 유용하게 사용할 수 있는 AI 도구를 쉽고 재미있게 배웁니다.</p>
+            
+            <h3>📦 포함 내용</h3>
+            <ul>
+                <li>AI가 무엇인지 쉽게 이해하기</li>
+                <li>ChatGPT 가입 및 기본 사용법</li>
+                <li>일상 질문 하는 방법 (날씨, 요리 레시피, 건강 정보 등)</li>
+                <li>AI 이미지 생성 도구 체험</li>
+                <li>실습 위주 학습 (직접 해보며 배우기)</li>
+                <li>개인 맞춤 학습 자료 제공</li>
+            </ul>
+            
+            <div class="info-box">
+                <p><strong>⏰ 예상 소요 시간:</strong> 2시간 (기초 과정)</p>
+                <p><strong>💰 가격:</strong> 60,000원 (2회 진행 시 100,000원)</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('modal3')">&times;</span>
+            <h2>📱 스마트폰 활용 교육</h2>
+            <p>꼭 필요한 스마트폰 기능과 앱 사용법을 천천히 배워 디지털 생활을 편리하게 만듭니다.</p>
+            
+            <h3>📦 포함 내용</h3>
+            <ul>
+                <li>정부24 앱 설치 및 사용법</li>
+                <li>모바일 뱅킹 안전하게 사용하기</li>
+                <li>택시/배달 앱 사용법</li>
+                <li>카카오톡 고급 기능 (단체방, 파일 전송 등)</li>
+                <li>유용한 생활 앱 추천 및 설치</li>
+                <li>개인정보 보호 및 보안 설정</li>
+            </ul>
+            
+            <div class="info-box">
+                <p><strong>⏰ 예상 소요 시간:</strong> 1.5시간</p>
+                <p><strong>💰 가격:</strong> 40,000원</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('modal4')">&times;</span>
+            <h2>📋 맞춤형 정보 자료 제작</h2>
+            <p>개인의 필요와 상황에 맞춘 정보 가이드북을 제작하여 언제든 참고할 수 있도록 합니다.</p>
+            
+            <h3>📦 포함 내용</h3>
+            <ul>
+                <li>개인 맞춤 정보 수집 및 정리</li>
+                <li>큰 글씨, 간결한 문장으로 편집</li>
+                <li>그림과 도표로 이해하기 쉽게 구성</li>
+                <li>단계별 체크리스트 포함</li>
+                <li>PDF 파일 + 인쇄본 제공</li>
+                <li>필요 시 업데이트 지원</li>
+            </ul>
+            
+            <div class="info-box">
+                <p><strong>⏰ 예상 소요 시간:</strong> 3-5일 (제작 기간)</p>
+                <p><strong>💰 가격:</strong> 70,000원 (10페이지 기준)</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal5" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('modal5')">&times;</span>
+            <h2>💬 정보 탐색 대행</h2>
+            <p>찾기 어려운 정보를 대신 찾아서 정리해드리는 서비스입니다.</p>
+            
+            <h3>📦 포함 내용</h3>
+            <ul>
+                <li>원하는 정보 주제 상담</li>
+                <li>신뢰할 수 있는 출처에서 정보 수집</li>
+                <li>핵심 내용만 쉽게 정리</li>
+                <li>관련 사이트 링크 제공</li>
+                <li>추가 질문 답변 (3회)</li>
+                <li>정리된 문서 파일 전달</li>
+            </ul>
+            
+            <div class="info-box">
+                <p><strong>⏰ 예상 소요 시간:</strong> 1-2일 (정보 수집 및 정리)</p>
+                <p><strong>💰 가격:</strong> 30,000원 (주제 1개 기준)</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal6" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('modal6')">&times;</span>
+            <h2>👥 소그룹 정보 교실</h2>
+            <p>비슷한 관심사를 가진 분들과 함께 배우는 소규모 그룹 수업입니다.</p>
+            
+            <h3>📦 포함 내용</h3>
+            <ul>
+                <li>5-10명 소그룹 진행</li>
+                <li>주제별 정기 모임 (주 1회, 4주 과정)</li>
+                <li>실습 중심 커리큘럼</li>
+                <li>개인별 진도 체크</li>
+                <li>학습 자료 제공</li>
+                <li>수료 후 온라인 커뮤니티 참여</li>
+            </ul>
+            
+            <div class="info-box">
+                <p><strong>⏰ 예상 소요 시간:</strong> 주 1회 2시간, 4주 과정</p>
+                <p><strong>💰 가격:</strong> 120,000원 (4주 전체)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 작동 방식 섹션 -->
+    <section class="how-it-works fade-in">
+        <div class="container">
+            <h2 class="section-title">이용 방법 🔄</h2>
+            <p class="section-subtitle">간단한 4단계로 시작하세요</p>
+            
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1️⃣</div>
+                    <h3>상담 신청</h3>
+                    <p>전화, 카카오톡, 또는 구글 폼으로 상담을 신청합니다. 편한 방법으로 연락주세요.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2️⃣</div>
+                    <h3>필요 파악</h3>
+                    <p>어떤 정보가 필요한지, 무엇을 배우고 싶은지 편하게 이야기 나눕니다.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3️⃣</div>
+                    <h3>서비스 진행</h3>
+                    <p>약속한 시간에 만나 천천히 차근차근 배우고 정보를 받습니다.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">4️⃣</div>
+                    <h3>지속 지원</h3>
+                    <p>서비스 후에도 궁금한 점이 있으면 언제든 연락해서 물어보실 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 특장점 섹션 -->
+    <section class="features-section fade-in">
+        <div class="container">
+            <h2 class="section-title">왜 '삶의 정보 한 조각'을 선택해야 하나요? ⭐</h2>
+            <p class="section-subtitle">다른 서비스와 차별화된 우리만의 강점</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>중년층 맞춤 설명</h3>
+                    <p>어려운 용어는 쉽게 풀어서, 천천히 이해할 수 있을 때까지 설명합니다.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍🏫</div>
+                    <h3>1:1 맞춤 교육</h3>
+                    <p>개인의 속도에 맞춰 진행하며, 이해할 때까지 반복해서 알려드립니다.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📞</div>
+                    <h3>전화 상담 가능</h3>
+                    <p>온라인이 어려우시면 전화로 편하게 상담하고 예약할 수 있습니다.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🏠</div>
+                    <h3>방문 서비스</h3>
+                    <p>직접 오시기 어려우면 댁으로 찾아가서 서비스를 제공합니다.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>합리적인 가격</h3>
+                    <p>부담 없는 가격으로 양질의 정보와 교육을 받으실 수 있습니다.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>지속적인 지원</h3>
+                    <p>서비스 이후에도 궁금한 점은 언제든 연락해서 물어보실 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 가격 섹션 -->
+    <section class="pricing-section fade-in">
+        <div class="container">
+            <h2 class="section-title">가격 안내 💳</h2>
+            <p class="section-subtitle">부담 없이 시작할 수 있는 합리적인 가격</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-emoji">🌱</div>
+                    <h3>기본 패키지</h3>
+                    <div class="price">30,000원</div>
+                    <p class="price-detail">정보 탐색 또는 간단한 상담</p>
+                    <ul class="pricing-features">
+                        <li>정부 혜택 기본 상담 (1시간)</li>
+                        <li>정보 탐색 대행 (1건)</li>
+                        <li>기본 자료 제공</li>
+                        <li>전화/카톡 지원</li>
+                    </ul>
+                    <a href="https://forms.gle/YOUR_FORM_LINK" target="_blank" class="cta-button cta-primary">시작하기</a>
+                </div>
+                
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">⭐ 인기</div>
+                    <div class="pricing-emoji">🌟</div>
+                    <h3>표준 패키지</h3>
+                    <div class="price">100,000원</div>
+                    <p class="price-detail">가장 많이 선택하는 패키지</p>
+                    <ul class="pricing-features">
+                        <li>정부 혜택 심층 컨설팅</li>
+                        <li>AI 기초 교육 (2회)</li>
+                        <li>맞춤형 자료 제작</li>
+                        <li>1개월 무료 질문 답변</li>
+                        <li>방문 서비스 가능</li>
+                    </ul>
+                    <a href="https://forms.gle/YOUR_FORM_LINK" target="_blank" class="cta-button cta-primary">시작하기</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="pricing-emoji">💎</div>
+                    <h3>프리미엄 패키지</h3>
+                    <div class="price">250,000원</div>
+                    <p class="price-detail">모든 서비스 포함</p>
+                    <ul class="pricing-features">
+                        <li>전체 서비스 무제한 이용 (3개월)</li>
+                        <li>정기 방문 교육 (월 4회)</li>
+                        <li>개인 맞춤 커리큘럼</li>
+                        <li>가족 동반 교육 가능</li>
+                        <li>24시간 질문 답변</li>
+                        <li>평생 자료 업데이트</li>
+                    </ul>
+                    <a href="https://forms.gle/YOUR_FORM_LINK" target="_blank" class="cta-button cta-primary">시작하기</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ 섹션 -->
+    <section class="faq-section fade-in">
+        <div class="container">
+            <h2 class="section-title">자주 묻는 질문 ❓</h2>
+            <p class="section-subtitle">궁금한 점을 해결해드립니다</p>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">❓ 컴퓨터를 전혀 못 다뤄도 배울 수 있나요?</div>
+                    <div class="faq-answer">
+                        <p>네, 전혀 문제없습니다! 마우스 사용법부터 천천히 알려드립니다. 개인의 수준에 맞춰서 진행하며, 이해할 때까지 반복해서 설명드립니다. 지금까지 컴퓨터를 한 번도 다뤄보지 않으신 분들도 많이 배우고 가셨습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ 나이가 많아도 AI를 배울 수 있을까요?</div>
+                    <div class="faq-answer">
+                        <p>물론입니다! AI는 생각보다 간단합니다. 스마트폰으로 메시지 보내듯이 질문만 하면 됩니다. 실제로 60-70대 분들도 ChatGPT를 활용해서 요리 레시피를 찾고, 건강 정보를 얻고 계십니다. 나이는 전혀 문제가 되지 않습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ 서비스 지역이 어디까지인가요?</div>
+                    <div class="faq-answer">
+                        <p>대전 지역을 중심으로 서비스를 제공하고 있으며, 세종, 충남 일부 지역도 방문 가능합니다. 먼 지역의 경우 온라인(화상통화)으로도 서비스를 제공하고 있으니 부담 없이 문의해주세요.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ 혼자 오기 어려운데 가족과 함께 참여할 수 있나요?</div>
+                    <div class="faq-answer">
+                        <p>네, 환영합니다! 오히려 가족분과 함께 오시면 배운 내용을 집에서도 복습하실 수 있어서 더 좋습니다. 자녀분, 배우자분과 함께 오시는 분들이 많으며, 추가 비용 없이 함께 들으실 수 있습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ 한 번 배우면 다 기억할 수 있을까요?</div>
+                    <div class="faq-answer">
+                        <p>걱정하지 마세요! 배운 내용은 모두 자료로 정리해서 드립니다. 집에서 다시 볼 수 있도록 큰 글씨로, 그림과 함께 만들어드립니다. 또한 서비스 후에도 궁금한 점이 생기면 언제든 전화나 카톡으로 물어보실 수 있습니다.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ 결제는 어떻게 하나요?</div>
+                    <div class="faq-answer">
+                        <p>현금, 계좌이체, 카드 결제 모두 가능합니다. 서비스를 받으신 후에 결제하시면 됩니다. 부담 없이 먼저 상담을 받아보시고, 만족하시면 그때 결제하셔도 됩니다.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">❓ 정부 혜택을 찾아도 못 받을 수도 있나요?</div>
+                    <div class="faq-answer">
+                        <p>개인의 상황에 따라 조건이 맞지 않으면 받지 못하는 혜택도 있습니다. 하지만 대부분 알려진 것보다 훨씬 다양한 혜택이 있고, 여러 가지 중 최소 1-2개는 받으실 수 있습니다. 신청 가능한 모든 혜택을 꼼꼼히 찾아드립니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 최종 CTA 섹션 -->
+    <section class="final-cta">
+        <div class="container">
+            <div class="emoji-decoration">🎯✨📞</div>
+            <h2>지금 바로 시작하세요!</h2>
+            <p>정보의 장벽을 넘어 더 풍요로운 삶을 누리세요.<br>첫 상담은 무료입니다.</p>
+            <div class="cta-container">
+                <a href="https://forms.gle/YOUR_FORM_LINK" target="_blank" class="cta-button cta-primary" style="font-size: 1.2em; padding: 20px 50px;">무료 상담 신청하기 💬</a>
+            </div>
+            <p style="margin-top: 30px; font-size: 1.1em;">📞 전화 상담: 010-XXXX-XXXX<br>💬 카카오톡: @삶의정보한조각</p>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>🧩 삶의 정보 한 조각</h3>
+                <p>중년층을 위한 쉽고 친절한<br>정보 가이드 서비스</p>
+                <p style="margin-top: 15px; font-style: italic;">"정보는 누구에게나 평등해야 합니다"</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>📞 연락처</h3>
+                <ul class="contact-info">
+                    <li>📧 이메일: info@lifeinfo.com</li>
+                    <li>📞 전화: 010-XXXX-XXXX</li>
+                    <li>💬 카카오톡: @삶의정보한조각</li>
+                    <li>📍 위치: 대전광역시</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>🔗 소셜 미디어</h3>
+                <div class="social-links">
+                    <a href="#" title="Facebook">📘</a>
+                    <a href="#" title="Instagram">📷</a>
+                    <a href="#" title="YouTube">📺</a>
+                    <a href="#" title="Blog">📝</a>
+                </div>
+                <p style="margin-top: 20px;">운영 시간<br>평일 09:00 - 18:00<br>주말 및 공휴일 휴무</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 삶의 정보 한 조각. All rights reserved.</p>
+            <p>사업자등록번호: XXX-XX-XXXXX</p>
+        </div>
+    </footer>
+
+    <!-- 맨 위로 버튼 -->
+    <div class="back-to-top" id="backToTop">↑</div>
+
+    <script>
+        // 스크롤 애니메이션
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 부드러운 스크롤
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 모달 열기/닫기
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            if (event.target.className === '
